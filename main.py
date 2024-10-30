@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from crewai import (Agent, Task, Crew)
-from crewai_tools import (WebsiteSearchTool, SerperDevTool)
+from crewai_tools import (WebsiteSearchTool, SerperDevTool, ScrapeWebsiteTool)
 
 # INITS
 load_dotenv()
@@ -16,8 +16,7 @@ def app() -> None:
                    temperature=0.5,
                    api_key=os.getenv('GROQ_API_KEY'))
     
-    search_tool = SerperDevTool()
-    user_manual = WebsiteSearchTool(website='https://arquivar.gitbook.io')
+    user_manual = ScrapeWebsiteTool(website_url='https://arquivar.gitbook.io')
     
     search_agent = Agent(role='Senior Researcher',
                          goal='Find answers to questions received based on user manual.',
@@ -42,7 +41,7 @@ def app() -> None:
     crew = Crew(agents=[search_agent, editor_agent],
                 tasks=[task])
     
-    crew.kickoff(inputs={'question': 'Me fale a respeito de solicitações avulsas.'})
+    crew.kickoff(inputs={'question': 'O que é grupo de endereço?'})
 
 # APP
 if __name__ == '__main__':
