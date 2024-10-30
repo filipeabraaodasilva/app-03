@@ -17,10 +17,30 @@ def app() -> None:
     
     user_manual = WebsiteSearchTool(website='https://arquivar.gitbook.io/')
     
-    agent = Agent(role='',
-                  goal='',
-                  backstory='',
-                  llm='')
+    search_agent = Agent(role='Senior Researcher',
+                         goal='Find answers to questions received.',
+                         backstory='Specialist in the ArqGED system.',
+                         llm=llm,
+                         tools=[user_manual],
+                         verbose=True,
+                         allow_delegation=True)
+    
+    editor_agent = Agent(role='Senior Editor',
+                         goal='Write a clear response based on the question received and the data obtained by other agents.',
+                         backstory='You are an experienced, confident writer and know how to express yourself clearly and directly.',
+                         llm=llm,
+                         tools=[],
+                         verbose=True)
+    
+    task = Task(description='Respond to user questions by consulting the information available in the manual.'
+                            'Questionamento: {question}',
+                agent=search_agent,
+                expected_output='Text aways in PT-BR.')
+    
+    crew = Crew(agents=[search_agent, editor_agent],
+                tasks=[task])
+    
+    crew.kickoff(inputs={'question': 'O que é workflow?'})
 
 # APP
 if __name__ == '__main__':
