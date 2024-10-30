@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from crewai import (Agent, Task, Crew)
-from crewai_tools import (WebsiteSearchTool)
+from crewai_tools import (WebsiteSearchTool, SerperDevTool)
 
 # INITS
 load_dotenv()
@@ -13,8 +13,10 @@ def app() -> None:
     
     llm = ChatGroq(model='groq/llama3-70b-8192',
                    model_kwargs={'provider': 'Huggingface'},
-                   temperature=0.5)
+                   temperature=0.5,
+                   api_key=os.getenv('GROQ_API_KEY'))
     
+    search_tool = SerperDevTool()
     user_manual = WebsiteSearchTool(website='https://arquivar.gitbook.io')
     
     search_agent = Agent(role='Senior Researcher',
