@@ -11,7 +11,8 @@ load_dotenv()
 # FUNCS
 def app() -> None:
     
-    llm = ChatGroq(model='llama3-70b-8192',
+    llm = ChatGroq(model='groq/llama3-70b-8192',
+                   model_kwargs={'provider': 'Huggingface'},
                    temperature=0.5,
                    api_key=os.getenv('GROQ_API_KEY'))
     
