@@ -13,13 +13,12 @@ def app() -> None:
     
     llm = ChatGroq(model='groq/llama3-70b-8192',
                    model_kwargs={'provider': 'Huggingface'},
-                   temperature=0.5,
-                   api_key=os.getenv('GROQ_API_KEY'))
+                   temperature=0.5)
     
-    user_manual = WebsiteSearchTool(website='https://arquivar.gitbook.io/')
+    user_manual = WebsiteSearchTool(website='https://arquivar.gitbook.io')
     
     search_agent = Agent(role='Senior Researcher',
-                         goal='Find answers to questions received.',
+                         goal='Find answers to questions received based on user manual.',
                          backstory='Specialist in the ArqGED system.',
                          llm=llm,
                          tools=[user_manual],
@@ -33,15 +32,15 @@ def app() -> None:
                          tools=[],
                          verbose=True)
     
-    task = Task(description='Respond to user questions by consulting the information available in the manual.'
-                            'Questionamento: {question}',
+    task = Task(description='Respond to user questions by consulting the information available in the manual, use the editor_agent to write the final text.'
+                            'Question: {question}',
                 agent=search_agent,
                 expected_output='Text aways in PT-BR.')
     
     crew = Crew(agents=[search_agent, editor_agent],
                 tasks=[task])
     
-    crew.kickoff(inputs={'question': 'O que é workflow?'})
+    crew.kickoff(inputs={'question': 'Me fale a respeito de solicitações avulsas.'})
 
 # APP
 if __name__ == '__main__':
