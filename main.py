@@ -9,7 +9,7 @@ from crewai_tools import (ScrapeWebsiteTool)
 load_dotenv()
 
 # FUNCS
-def app() -> None:
+def app(question) -> None:
     
     llm = ChatGroq(model='groq/llama3-70b-8192',
                    model_kwargs={'provider': 'Huggingface'},
@@ -23,15 +23,15 @@ def app() -> None:
                          backstory='Specialist in the ArqGED system.',
                          llm=llm,
                          tools=[user_manual],
-                         verbose=True,
+                         #verbose=True,
                          allow_delegation=True)
     
     editor_agent = Agent(role='Senior Editor',
                          goal='Write a clear response based on the question received and the data obtained by other agents.',
                          backstory='You are an experienced, confident writer and know how to express yourself clearly and directly.',
                          llm=llm,
-                         tools=[],
-                         verbose=True)
+                        #  verbose=True,
+                         tools=[])
     
     task = Task(description='Respond to user questions by consulting the information available in the manual, use the editor_agent to write the final text.'
                             'Question: {question}',
@@ -41,8 +41,12 @@ def app() -> None:
     crew = Crew(agents=[search_agent, editor_agent],
                 tasks=[task])
     
-    crew.kickoff(inputs={'question': 'Subcaixa na configuração de caixa, qual a ligação?'})
+    crew.kickoff(inputs={'question': question})
+    
+    print(crew)
 
 # APP
 if __name__ == '__main__':
-    app()
+    q = input('Pergunte a respeito da configuração de caixa: ')
+    app(question=q)
+    
