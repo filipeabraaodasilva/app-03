@@ -41,7 +41,7 @@ def app() -> None:
     crew = Crew(agents=[search_agent, editor_agent],
                 tasks=[task])
     
-    crew.kickoff(inputs={'question': 'O que é número controlado?'})
+    crew.kickoff(inputs={'question': 'Subcaixa na configuração de caixa, qual a ligação?'})
 
 # APP
 if __name__ == '__main__':
